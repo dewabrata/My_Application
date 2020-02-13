@@ -10,7 +10,6 @@ public class DatabaseContentProvider extends ContentProvider {
     protected Configuration getConfiguration() {
         Configuration.Builder builder = new Configuration.Builder(getContext());
         builder.addModelClass(Inventory.class);
-
         return builder.create();
     }
 }

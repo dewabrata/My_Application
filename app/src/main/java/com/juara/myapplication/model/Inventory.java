@@ -8,7 +8,7 @@ import com.activeandroid.annotation.Table;
 @Table(name = "inventory")
 public class Inventory extends Model {
 
-    @Column
+    @Column(index = true,unique = true)
     private String name;
     @Column
     private int stock;

@@ -7,8 +7,13 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.juara.myapplication.model.Inventory;
 
@@ -17,10 +22,20 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    LinearLayout ll ;
+    Button btnDelete ;
+    Button btnUpdate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ll = findViewById(R.id.layout);
+
+
+
+
+
 
         Inventory inventory = new Inventory();
 
@@ -29,8 +44,65 @@ public class MainActivity extends AppCompatActivity {
         inventory.setStock(10);
         inventory.save();
 
+        inventory = new Inventory();
+        inventory.setName("KKN di desa Ponari");
+        inventory.setPrice("50000");
+        inventory.setStock(5);
+        inventory.save();
+
+
+        printScreen();
+
+
+
+    }
+
+
+    public void printScreen(){
+
+        ll.removeAllViews();
+        btnUpdate = new Button(MainActivity.this);
+        btnUpdate.setText("Update");
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Inventory data = new Select().from(Inventory.class).where("name = 'Buku Beranak dalam Kardus'").executeSingle();
+                data.setPrice("99999999");
+                data.save();
+                printScreen();
+            }
+        });
+        btnDelete = new Button(MainActivity.this);
+        btnDelete.setText("Delete");
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //cara pertama
+                /*
+                Inventory inventory = Inventory.load(Inventory.class,1);
+                inventory.delete();
+                printScreen();
+
+                 */
+
+                //cara kedua
+
+               new Delete().from(Inventory.class).where("name = 'KKN di desa Ponari'").execute();
+
+               printScreen();
+
+            }
+        });
+        ll.addView(btnDelete);
+        ll.addView(btnUpdate);
         List<Inventory> data = new Select().from(Inventory.class).execute();
-        Toast.makeText(MainActivity.this,data.get(0).getName(),Toast.LENGTH_LONG).show();
+
+        for(int x  = 0 ; x < data.size();x ++) {
+            TextView txtData = new TextView(MainActivity.this);
+            txtData.setText(data.get(x).getName()+" "+ data.get(x).getPrice()+" "+ data.get(x).getStock());
+            ll.addView(txtData);
+        }
     }
 
     String[] permissions = new String[]{
